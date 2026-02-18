@@ -1,8 +1,6 @@
 # Docker Compose configuration for T-38 Planning Aid Email Service
 # Multi-container setup with separate web and worker services
 
-version: '3.8'
-
 services:
   web:
     build: .
