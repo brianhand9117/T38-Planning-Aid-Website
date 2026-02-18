@@ -157,6 +157,12 @@ def contact():
 # ADMIN ROUTES
 # ───────────────────────────────────────
 
+@admin_bp.route('/')
+def admin_index():
+    """Admin home - redirect to dashboard"""
+    return redirect(url_for('admin.dashboard'))
+
+
 @admin_bp.route('/dashboard')
 def dashboard():
     """Admin dashboard"""
