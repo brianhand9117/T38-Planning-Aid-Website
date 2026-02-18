@@ -1,4 +1,5 @@
 # Docker Compose configuration for T-38 Planning Aid Email Service
+# Multi-container setup with separate web and worker services
 
 version: '3.8'
 
@@ -6,37 +7,100 @@ services:
   web:
     build: .
     container_name: t38-planning-aid-web
+    command: ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "--timeout", "120", "run:app"]
     ports:
       - "5000:5000"
     environment:
       - FLASK_ENV=production
       - FLASK_DEBUG=False
-      - SQLALCHEMY_DATABASE_URI=sqlite:///./t38_email.db
-      # Email Configuration (set these)
+      - SQLALCHEMY_DATABASE_URI=sqlite:////app/data/t38_email.db
+      # Email Configuration (set these in .env file)
       - MAIL_SERVER=${MAIL_SERVER}
       - MAIL_PORT=${MAIL_PORT}
       - MAIL_USE_TLS=${MAIL_USE_TLS}
+      - MAIL_USE_SSL=${MAIL_USE_SSL}
       - MAIL_USERNAME=${MAIL_USERNAME}
       - MAIL_PASSWORD=${MAIL_PASSWORD}
       - MAIL_DEFAULT_SENDER=${MAIL_DEFAULT_SENDER}
-      # Schedule
-      - KML_SCHEDULE_DAY=1
-      - KML_SCHEDULE_HOUR=9
-      - KML_SCHEDULE_MINUTE=0
+      # Schedule Configuration
+      - KML_SCHEDULE_DAY=${KML_SCHEDULE_DAY:-1}
+      - KML_SCHEDULE_HOUR=${KML_SCHEDULE_HOUR:-9}
+      - KML_SCHEDULE_MINUTE=${KML_SCHEDULE_MINUTE:-0}
       # Repository path
-      - KML_REPO_PATH=../
+      - KML_REPO_PATH=${KML_REPO_PATH:-../}
     volumes:
-      - ./t38_email.db:/app/t38_email.db
-      - ./logs:/app/logs
-      - ..:/parent_repo  # Mount parent directory to access T-38 code
+      - db_data:/app/data
+      - logs:/app/logs
+      - ..:/parent_repo:ro  # Mount parent directory to access T-38 code (read-only)
+    networks:
+      - t38-network
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:5000/', timeout=5)"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 5s
+      start_period: 10s
+    depends_on:
+      - db-init
+
+  worker:
+    build: .
+    container_name: t38-planning-aid-worker
+    command: ["python", "worker.py"]
+    environment:
+      - FLASK_ENV=production
+      - SQLALCHEMY_DATABASE_URI=sqlite:////app/data/t38_email.db
+      # Email Configuration (set these in .env file)
+      - MAIL_SERVER=${MAIL_SERVER}
+      - MAIL_PORT=${MAIL_PORT}
+      - MAIL_USE_TLS=${MAIL_USE_TLS}
+      - MAIL_USE_SSL=${MAIL_USE_SSL}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - MAIL_DEFAULT_SENDER=${MAIL_DEFAULT_SENDER}
+      # Schedule Configuration
+      - KML_SCHEDULE_DAY=${KML_SCHEDULE_DAY:-1}
+      - KML_SCHEDULE_HOUR=${KML_SCHEDULE_HOUR:-9}
+      - KML_SCHEDULE_MINUTE=${KML_SCHEDULE_MINUTE:-0}
+      # Repository path
+      - KML_REPO_PATH=${KML_REPO_PATH:-../}
+    volumes:
+      - db_data:/app/data
+      - logs:/app/logs
+      - ..:/parent_repo:ro  # Mount parent directory to access T-38 code (read-only)
+    networks:
+      - t38-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "from app import scheduler; exit(0 if scheduler.running else 1)"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      - db-init
+      - web
+
+  # Helper service to initialize database
+  db-init:
+    build: .
+    container_name: t38-planning-aid-db-init
+    command: ["python", "-c", "from app import create_app, db; app = create_app('production'); app.app_context().push(); db.create_all(); print('Database initialized')"]
+    environment:
+      - SQLALCHEMY_DATABASE_URI=sqlite:////app/data/t38_email.db
+    volumes:
+      - db_data:/app/data
+    networks:
+      - t38-network
+    restart: "no"
 
 volumes:
-  db:
+  db_data:
     driver: local
+  logs:
+    driver: local
+
+networks:
+  t38-network:
+    driver: bridge
