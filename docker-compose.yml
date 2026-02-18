@@ -71,14 +71,13 @@ services:
       - t38-network
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "python", "-c", "from app import scheduler; exit(0 if scheduler.running else 1)"]
+      test: ["CMD", "test", "-f", "/tmp/worker_heartbeat"]
       interval: 60s
       timeout: 10s
       retries: 3
       start_period: 30s
     depends_on:
       - db-init
-      - web
 
   # Helper service to initialize database
   db-init:

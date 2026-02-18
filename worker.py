@@ -11,13 +11,16 @@ from datetime import datetime
 from app import create_app, db, scheduler
 from app.tasks import schedule_kml_generation
 
+# Ensure logs directory exists
+os.makedirs('logs', exist_ok=True)
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
         logging.StreamHandler(sys.stdout),
-        logging.FileHandler('logs/worker.log') if os.path.exists('logs') else logging.StreamHandler(sys.stdout)
+        logging.FileHandler('logs/worker.log')
     ]
 )
 logger = logging.getLogger('worker')
@@ -89,10 +92,17 @@ def main():
         logger.info("Worker process running. Press Ctrl+C to stop.")
         logger.info("-"*60)
         
+        # Create heartbeat file for health checks
+        heartbeat_file = '/tmp/worker_heartbeat'
+        
         try:
             while not shutdown_requested:
+                # Update heartbeat file
+                with open(heartbeat_file, 'w') as f:
+                    f.write(str(time.time()))
+                
                 # Sleep in small intervals to allow signal handling
-                time.sleep(1)
+                time.sleep(5)
                 
         except KeyboardInterrupt:
             logger.info("Keyboard interrupt received")
@@ -100,6 +110,9 @@ def main():
             logger.info("Shutting down worker process...")
             if scheduler.running:
                 scheduler.shutdown(wait=True)
+            # Clean up heartbeat file
+            if os.path.exists(heartbeat_file):
+                os.remove(heartbeat_file)
             logger.info("Worker process stopped")
 
 
