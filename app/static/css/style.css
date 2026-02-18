@@ -394,7 +394,7 @@ body {
    ───────────────────────────────────────────────────────────── */
 
 .latest-kml-info {
-    max-width: 500px;
+    max-width: 600px;
     margin: 0 auto;
     padding-top: 2rem;
 }
@@ -403,6 +403,7 @@ body {
     text-align: center;
     color: var(--primary-blue);
     margin-bottom: 1rem;
+    font-size: 1.5rem;
 }
 
 .kml-card {
@@ -413,9 +414,47 @@ body {
     color: var(--primary-blue);
 }
 
+.kml-download-section {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.kml-details {
+    flex: 1;
+}
+
 .kml-card p {
     margin: 0.5rem 0;
     font-size: 0.95rem;
+}
+
+.kml-download-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.kml-download-button .btn {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    white-space: nowrap;
+    box-shadow: var(--shadow);
+}
+
+.btn-success {
+    background-color: var(--success-green);
+    color: white;
+    text-decoration: none;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+    background-color: #45a472;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
 }
 
 .kml-card strong {

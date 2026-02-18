@@ -70,15 +70,24 @@
 
         {% if latest_kml %}
         <div class="latest-kml-info">
-            <h3>Latest KML File</h3>
+            <h3>📥 Download Latest KML File</h3>
             <div class="kml-card">
-                <p><strong>File:</strong> {{ latest_kml.filename }}</p>
-                <p><strong>Generated:</strong> {{ latest_kml.generation_date.strftime('%B %d, %Y at %I:%M %p UTC') }}</p>
-                {% if latest_kml.num_airports %}
-                <p><strong>Airports:</strong> {{ latest_kml.num_airports }}</p>
-                {% endif %}
-                <p><strong>File Size:</strong> {{ "%.2f"|format(latest_kml.file_size_mb) }} MB</p>
-                <p><strong>Emails Sent:</strong> {{ latest_kml.emails_sent }}</p>
+                <div class="kml-download-section">
+                    <div class="kml-details">
+                        <p><strong>File:</strong> {{ latest_kml.filename }}</p>
+                        <p><strong>Generated:</strong> {{ latest_kml.generation_date.strftime('%B %d, %Y at %I:%M %p UTC') }}</p>
+                        {% if latest_kml.num_airports %}
+                        <p><strong>Airports:</strong> {{ latest_kml.num_airports }}</p>
+                        {% endif %}
+                        <p><strong>File Size:</strong> {{ "%.2f"|format(latest_kml.file_size_mb) }} MB</p>
+                        <p><strong>Emails Sent:</strong> {{ latest_kml.emails_sent }}</p>
+                    </div>
+                    <div class="kml-download-button">
+                        <a href="{{ url_for('static', filename='downloads/' + latest_kml.filename|replace(' ', '%20')) }}" class="btn btn-success" download>
+                            🌐 Download for ForeFlight
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
         {% endif %}
