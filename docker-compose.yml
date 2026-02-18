@@ -1,0 +1,42 @@
+# Docker Compose configuration for T-38 Planning Aid Email Service
+
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: t38-planning-aid-web
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - FLASK_DEBUG=False
+      - SQLALCHEMY_DATABASE_URI=sqlite:///./t38_email.db
+      # Email Configuration (set these)
+      - MAIL_SERVER=${MAIL_SERVER}
+      - MAIL_PORT=${MAIL_PORT}
+      - MAIL_USE_TLS=${MAIL_USE_TLS}
+      - MAIL_USERNAME=${MAIL_USERNAME}
+      - MAIL_PASSWORD=${MAIL_PASSWORD}
+      - MAIL_DEFAULT_SENDER=${MAIL_DEFAULT_SENDER}
+      # Schedule
+      - KML_SCHEDULE_DAY=1
+      - KML_SCHEDULE_HOUR=9
+      - KML_SCHEDULE_MINUTE=0
+      # Repository path
+      - KML_REPO_PATH=../
+    volumes:
+      - ./t38_email.db:/app/t38_email.db
+      - ./logs:/app/logs
+      - ..:/parent_repo  # Mount parent directory to access T-38 code
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:5000/', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+volumes:
+  db:
+    driver: local

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us{% endblock %}
+
+{% block content %}
+<section class="hero-small" style="background: linear-gradient(135deg, #0B3D91 0%, #1B4EC5 100%);">
+    <div class="container">
+        <h1>Contact Us</h1>
+        <p>Have questions or feedback? We'd love to hear from you!</p>
+    </div>
+</section>
+
+<section class="content-section">
+    <div class="container">
+        <div class="contact-wrapper">
+            <div class="contact-form-container">
+                <h2>Send us a Message</h2>
+                
+                <form method="POST" action="{{ url_for('main.contact') }}" class="contact-form">
+                    <div class="form-group">
+                        <label for="name">Full Name *</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Message *</label>
+                        <textarea id="message" name="message" rows="6" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
+            </div>
+
+            <div class="contact-info">
+                <h3>Other Ways to Reach Us</h3>
+                
+                <div class="info-item">
+                    <h4>Feedback</h4>
+                    <p>Have airport data to suggest or corrections to make? Use the form to the left.</p>
+                </div>
+
+                <div class="info-item">
+                    <h4>Technical Issues</h4>
+                    <p>If you're having trouble with emails or subscriptions, please let us know and we'll help troubleshoot.</p>
+                </div>
+
+                <div class="info-item">
+                    <h4>Feature Requests</h4>
+                    <p>Want to see new features or data fields? We welcome your suggestions for improving the service.</p>
+                </div>
+
+                <div class="info-item">
+                    <h4>General Inquiries</h4>
+                    <p>Questions about the T-38 Planning Aid? We're here to help!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

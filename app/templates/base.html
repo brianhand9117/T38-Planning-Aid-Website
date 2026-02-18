@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}T-38 Planning Aid - Monthly KML Service{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="navbar">
+        <div class="container">
+            <div class="navbar-brand">
+                <a href="{{ url_for('main.index') }}" class="logo">
+                    <span class="logo-text">🚀 T-38 Planning Aid</span>
+                </a>
+            </div>
+            <nav class="navbar-menu">
+                <a href="{{ url_for('main.index') }}" class="nav-link">Home</a>
+                <a href="{{ url_for('main.about') }}" class="nav-link">About</a>
+                <a href="{{ url_for('main.contact') }}" class="nav-link">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                        <button onclick="this.parentElement.style.display='none';">&times;</button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h5>T-38 Planning Aid</h5>
+                    <p>Empowering T-38 Talon operations with comprehensive airport data and flight planning tools.</p>
+                </div>
+                <div class="footer-section">
+                    <h5>Links</h5>
+                    <ul>
+                        <li><a href="{{ url_for('main.about') }}">About</a></li>
+                        <li><a href="{{ url_for('main.privacy') }}">Privacy</a></li>
+                        <li><a href="{{ url_for('main.contact') }}">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h5>Subscribe</h5>
+                    <p>Get monthly airport data direct to your inbox.</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 T-38 Planning Aid | Powered by USAF, NASA & Community Flying</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

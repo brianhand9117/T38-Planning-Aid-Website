@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}KML Generation History{% endblock %}
+
+{% block content %}
+<section class="hero-small" style="background: linear-gradient(135deg, #0B3D91 0%, #1B4EC5 100%);">
+    <div class="container">
+        <h1>KML Generation History</h1>
+    </div>
+</section>
+
+<section class="content-section">
+    <div class="container">
+        <div class="admin-nav">
+            <a href="{{ url_for('admin.dashboard') }}" class="admin-nav-link">Dashboard</a>
+            <a href="{{ url_for('admin.subscribers') }}" class="admin-nav-link">Subscribers</a>
+            <a href="{{ url_for('admin.email_logs') }}" class="admin-nav-link">Email Logs</a>
+            <a href="{{ url_for('admin.kml_history') }}" class="admin-nav-link active">KML History</a>
+        </div>
+
+        <div class="admin-section">
+            <h2>KML Generations</h2>
+            <div class="table-wrapper">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>File</th>
+                            <th>Generated</th>
+                            <th>Status</th>
+                            <th>Airports</th>
+                            <th>Size</th>
+                            <th>Emails Sent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for kml in kml_gens.items %}
+                        <tr>
+                            <td>{{ kml.filename }}</td>
+                            <td>{{ kml.generation_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                <span class="status-badge status-{{ kml.status }}">{{ kml.status }}</span>
+                            </td>
+                            <td>{{ kml.num_airports or '-' }}</td>
+                            <td>{{ "%.2f"|format(kml.file_size_mb) }} MB</td>
+                            <td>{{ kml.emails_sent }}</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: #999;">No KML generations</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if kml_gens.pages > 1 %}
+            <div class="pagination">
+                {% if kml_gens.has_prev %}
+                <a href="{{ url_for('admin.kml_history', page=kml_gens.prev_num) }}" class="btn btn-small">← Previous</a>
+                {% endif %}
+
+                {% for page_num in kml_gens.iter_pages() %}
+                    {% if page_num %}
+                        {% if page_num == kml_gens.page %}
+                        <span class="pagination-current">{{ page_num }}</span>
+                        {% else %}
+                        <a href="{{ url_for('admin.kml_history', page=page_num) }}" class="btn btn-small">{{ page_num }}</a>
+                        {% endif %}
+                    {% else %}
+                    <span>...</span>
+                    {% endif %}
+                {% endfor %}
+
+                {% if kml_gens.has_next %}
+                <a href="{{ url_for('admin.kml_history', page=kml_gens.next_num) }}" class="btn btn-small">Next →</a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<style>
+.admin-nav {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #E0E0E0;
+}
+
+.admin-nav-link {
+    padding: 1rem;
+    text-decoration: none;
+    color: #666;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.admin-nav-link:hover {
+    color: #0B3D91;
+}
+
+.admin-nav-link.active {
+    color: #0B3D91;
+    border-bottom-color: #0B3D91;
+    font-weight: 600;
+}
+
+.admin-section {
+    margin-top: 2rem;
+}
+
+.admin-section h2 {
+    color: #0B3D91;
+    margin-bottom: 1.5rem;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 2rem;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.admin-table thead {
+    background-color: #0B3D91;
+    color: white;
+}
+
+.admin-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+}
+
+.admin-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #E0E0E0;
+}
+
+.admin-table tbody tr:hover {
+    background-color: #F8F9FA;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status-success {
+    background-color: #D4EDDA;
+    color: #155724;
+}
+
+.status-failed {
+    background-color: #F8D7DA;
+    color: #721C24;
+}
+
+.pagination {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.pagination-current {
+    padding: 0.5rem 1rem;
+    background-color: #0B3D91;
+    color: white;
+    border-radius: 4px;
+    font-weight: 600;
+}
+</style>
+{% endblock %}

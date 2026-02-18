@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block title %}T-38 Planning Aid - Monthly KML Service{% endblock %}
+
+{% block content %}
+<section class="hero" style="background: linear-gradient(135deg, #0B3D91 0%, #1B4EC5 100%);">
+    <div class="container hero-content">
+        <h1 class="hero-title">T-38 Planning Aid</h1>
+        <p class="hero-subtitle">Stay Updated with the Latest Airport Data for ForeFlight</p>
+        <p class="hero-description">
+            Subscribe to receive monthly KML files with current T-38 airport information, including runway data, fuel availability, and community feedback.
+        </p>
+    </div>
+</section>
+
+<section class="features">
+    <div class="container">
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Comprehensive Data</h3>
+                <p>Complete T-38 eligible airport listings with runway lengths, fuel availability, and JASU locations.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">✈️</div>
+                <h3>ForeFlight Compatible</h3>
+                <p>KML files that seamlessly import into ForeFlight for enhanced flight planning capabilities.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📧</div>
+                <h3>Monthly Updates</h3>
+                <p>Automatic email delivery every month with the latest airport data and community contributions.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎨</div>
+                <h3>Color-Coded Pins</h3>
+                <p>Intuitive color system quickly identifies airport categories, fuel availability, and special considerations.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="subscription-section">
+    <div class="container">
+        <h2>Subscribe to Monthly Updates</h2>
+        <p class="section-description">Join {{ total_subscribers }} subscribers receiving monthly T-38 airport data</p>
+        
+        <div class="subscription-form-wrapper">
+            <form id="subscriptionForm" class="subscription-form" method="POST" action="{{ url_for('main.subscribe') }}">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="first_name">First Name</label>
+                        <input type="text" id="first_name" name="first_name" placeholder="John" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" id="last_name" name="last_name" placeholder="Doe">
+                    </div>
+                </div>
+                <div class="form-group full-width">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Subscribe Now</button>
+                    <p class="form-note">We'll never share your email. You can unsubscribe anytime.</p>
+                </div>
+            </form>
+        </div>
+
+        {% if latest_kml %}
+        <div class="latest-kml-info">
+            <h3>Latest KML File</h3>
+            <div class="kml-card">
+                <p><strong>File:</strong> {{ latest_kml.filename }}</p>
+                <p><strong>Generated:</strong> {{ latest_kml.generation_date.strftime('%B %d, %Y at %I:%M %p UTC') }}</p>
+                {% if latest_kml.num_airports %}
+                <p><strong>Airports:</strong> {{ latest_kml.num_airports }}</p>
+                {% endif %}
+                <p><strong>File Size:</strong> {{ "%.2f"|format(latest_kml.file_size_mb) }} MB</p>
+                <p><strong>Emails Sent:</strong> {{ latest_kml.emails_sent }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<section class="how-it-works">
+    <div class="container">
+        <h2>How It Works</h2>
+        <div class="steps-grid">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>Subscribe</h3>
+                <p>Enter your email above to join our monthly mailing list.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>Verify</h3>
+                <p>Click the verification link in your confirmation email.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>Receive</h3>
+                <p>Get the latest KML file in your inbox on the 1st of each month.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <h3>Plan</h3>
+                <p>Import the KML into ForeFlight or Google Earth for flight planning.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="data-specs">
+    <div class="container">
+        <h2>What's Included</h2>
+        <div class="specs-grid">
+            <div class="spec-card">
+                <h4>Airport Eligibility</h4>
+                <ul>
+                    <li>T-38 operations authorized airports</li>
+                    <li>Runway length and surface type</li>
+                    <li>Blacklisted airports with reasons</li>
+                </ul>
+            </div>
+            <div class="spec-card">
+                <h4>Operational Data</h4>
+                <ul>
+                    <li>Government contract fuel locations</li>
+                    <li>JASU (Air Start Cart) availability</li>
+                    <li>Recent operations history</li>
+                </ul>
+            </div>
+            <div class="spec-card">
+                <h4>Community Input</h4>
+                <ul>
+                    <li>Pilot comments and feedback</li>
+                    <li>Airport updates and notes</li>
+                    <li>Special considerations</li>
+                </ul>
+            </div>
+            <div class="spec-card">
+                <h4>Formats</h4>
+                <ul>
+                    <li>KML for ForeFlight &amp; Google Earth</li>
+                    <li>Interactive HTML map preview</li>
+                    <li>Color-coded airport pins</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('subscriptionForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const btn = this.querySelector('button[type="submit"]');
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Subscribing...';
+    
+    fetch('{{ url_for("main.subscribe") }}', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showAlert(data.message, 'success');
+            document.getElementById('subscriptionForm').reset();
+        } else {
+            showAlert(data.message, 'error');
+        }
+    })
+    .catch(error => {
+        showAlert('An error occurred. Please try again.', 'error');
+        console.error('Error:', error);
+    })
+    .finally(() => {
+        btn.disabled = false;
+        btn.textContent = originalText;
+    });
+});
+
+function showAlert(message, type) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type}`;
+    alertDiv.innerHTML = message + '<button onclick="this.parentElement.style.display=\'none\';">&times;</button>';
+    
+    const mainElement = document.querySelector('main');
+    mainElement.insertBefore(alertDiv, mainElement.firstChild);
+    
+    setTimeout(() => {
+        alertDiv.style.display = 'none';
+    }, 5000);
+}
+</script>
+{% endblock %}

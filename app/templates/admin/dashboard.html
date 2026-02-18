@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<section class="hero-small" style="background: linear-gradient(135deg, #0B3D91 0%, #1B4EC5 100%);">
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+    </div>
+</section>
+
+<section class="content-section">
+    <div class="container">
+        <div class="admin-nav">
+            <a href="{{ url_for('admin.dashboard') }}" class="admin-nav-link active">Dashboard</a>
+            <a href="{{ url_for('admin.subscribers') }}" class="admin-nav-link">Subscribers</a>
+            <a href="{{ url_for('admin.email_logs') }}" class="admin-nav-link">Email Logs</a>
+            <a href="{{ url_for('admin.kml_history') }}" class="admin-nav-link">KML History</a>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-content">
+                    <h3>Active Subscribers</h3>
+                    <p class="stat-number">{{ total_subscribers }}</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-content">
+                    <h3>Pending Verification</h3>
+                    <p class="stat-number">{{ pending_subscribers }}</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">📧</div>
+                <div class="stat-content">
+                    <h3>Recent Emails</h3>
+                    <p class="stat-number">{{ recent_emails|length }}</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">📁</div>
+                <div class="stat-content">
+                    <h3>KML Generations</h3>
+                    <p class="stat-number">{{ recent_kml|length }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-section">
+            <h2>Recent KML Generations</h2>
+            <div class="table-wrapper">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>File</th>
+                            <th>Generated</th>
+                            <th>Status</th>
+                            <th>Emails Sent</th>
+                            <th>Size</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for kml in recent_kml %}
+                        <tr>
+                            <td>{{ kml.filename }}</td>
+                            <td>{{ kml.generation_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                <span class="status-badge status-{{ kml.status }}">{{ kml.status }}</span>
+                            </td>
+                            <td>{{ kml.emails_sent }}</td>
+                            <td>{{ "%.2f"|format(kml.file_size_mb) }} MB</td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: #999;">No KML generations yet</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="admin-section">
+            <h2>Recent Emails Sent</h2>
+            <div class="table-wrapper">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Recipient</th>
+                            <th>Subject</th>
+                            <th>Sent</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for email in recent_emails %}
+                        <tr>
+                            <td>{{ email.subscriber.email }}</td>
+                            <td>{{ email.subject }}</td>
+                            <td>{{ email.sent_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                <span class="status-badge status-{{ email.status }}">{{ email.status }}</span>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: #999;">No emails sent yet</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.admin-nav {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid #E0E0E0;
+}
+
+.admin-nav-link {
+    padding: 1rem;
+    text-decoration: none;
+    color: #666;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.admin-nav-link:hover {
+    color: #0B3D91;
+}
+
+.admin-nav-link.active {
+    color: #0B3D91;
+    border-bottom-color: #0B3D91;
+    font-weight: 600;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    border-left: 4px solid #1B4EC5;
+}
+
+.stat-icon {
+    font-size: 2rem;
+}
+
+.stat-content h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.stat-number {
+    margin: 0;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0B3D91;
+}
+
+.admin-section {
+    margin-top: 3rem;
+}
+
+.admin-section h2 {
+    color: #0B3D91;
+    margin-bottom: 1.5rem;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.admin-table thead {
+    background-color: #0B3D91;
+    color: white;
+}
+
+.admin-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+}
+
+.admin-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #E0E0E0;
+}
+
+.admin-table tbody tr:hover {
+    background-color: #F8F9FA;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status-success {
+    background-color: #D4EDDA;
+    color: #155724;
+}
+
+.status-failed {
+    background-color: #F8D7DA;
+    color: #721C24;
+}
+
+.status-pending {
+    background-color: #FFF3CD;
+    color: #856404;
+}
+
+.status-sent {
+    background-color: #D4EDDA;
+    color: #155724;
+}
+</style>
+{% endblock %}

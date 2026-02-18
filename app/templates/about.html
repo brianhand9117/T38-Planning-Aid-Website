@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}About T-38 Planning Aid{% endblock %}
+
+{% block content %}
+<section class="hero-small" style="background: linear-gradient(135deg, #0B3D91 0%, #1B4EC5 100%);">
+    <div class="container">
+        <h1>About T-38 Planning Aid</h1>
+    </div>
+</section>
+
+<section class="content-section">
+    <div class="container">
+        <div class="content-columns">
+            <div class="content-main">
+                <h2>Mission</h2>
+                <p>
+                    The T-38 Planning Aid is a comprehensive flight planning tool designed to support T-38 Talon operations 
+                    across the United States. Our mission is to provide pilots, planners, and operations specialists with 
+                    current, accurate airport data to enhance flight safety and operational effectiveness.
+                </p>
+
+                <h2>What We Do</h2>
+                <p>
+                    We aggregate and curate data from multiple authoritative sources including:
+                </p>
+                <ul>
+                    <li>FAA Airport Data (NASR)</li>
+                    <li>Runway and facility specifications</li>
+                    <li>Government fuel contract databases</li>
+                    <li>Community pilot feedback and comments</li>
+                    <li>Historical operations data</li>
+                </ul>
+
+                <h2>Features</h2>
+                <p>
+                    Our KML files provide:
+                </p>
+                <ul>
+                    <li><strong>Color-Coded Pins:</strong> Quick visual identification of airport categories</li>
+                    <li><strong>Runway Details:</strong> Length, surface type, and landing distance available</li>
+                    <li><strong>Fuel Availability:</strong> Government contract fuel locations</li>
+                    <li><strong>JASU Locations:</strong> Air start cart availability for emergency starts</li>
+                    <li><strong>Community Feedback:</strong> Pilot comments and operational notes</li>
+                    <li><strong>ForeFlight Integration:</strong> Seamless import for flight planning</li>
+                </ul>
+
+                <h2>Data Accuracy</h2>
+                <p>
+                    <strong>Disclaimer:</strong> While we strive for accuracy, all users are responsible for verifying 
+                    information independently. Current Airport Facilities Directories (A/FD) and IFR Supplements remain 
+                    the authoritative sources. Use this tool as a planning aid only.
+                </p>
+
+                <h2>Community Driven</h2>
+                <p>
+                    We welcome feedback, corrections, and updates from the pilot and operations community. 
+                    Your inputs help keep this data current and relevant. Contact us with comments or corrections.
+                </p>
+
+                <h2>Technical Details</h2>
+                <p>
+                    <strong>Update Frequency:</strong> Monthly (1st of the month)\<br/>
+                    <strong>Format:</strong> KML 2.2 (Google Earth, ForeFlight compatible)<br/>
+                    <strong>Data Sources:</strong> FAA NASR database, government contracts, community submissions<br/>
+                    <strong>Supported Platforms:</strong> ForeFlight, Google Earth, WinPlan, and other KML-compatible software
+                </p>
+            </div>
+
+            <div class="content-sidebar">
+                <div class="sidebar-box">
+                    <h4>Quick Facts</h4>
+                    <ul class="facts-list">
+                        <li>✓ Monthly updates</li>
+                        <li>✓ 100+ airports tracked</li>
+                        <li>✓ Community feedback integrated</li>
+                        <li>✓ Free service</li>
+                        <li>✓ ForeFlight compatible</li>
+                        <li>✓ No data sales</li>
+                    </ul>
+                </div>
+
+                <div class="sidebar-box">
+                    <h4>Contact</h4>
+                    <p>Questions or feedback?</p>
+                    <a href="{{ url_for('main.contact') }}" class="btn btn-small">Send us a message</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

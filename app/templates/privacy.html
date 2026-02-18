@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy Policy{% endblock %}
+
+{% block content %}
+<section class="hero-small" style="background: linear-gradient(135deg, #0B3D91 0%, #1B4EC5 100%);">
+    <div class="container">
+        <h1>Privacy Policy</h1>
+    </div>
+</section>
+
+<section class="content-section">
+    <div class="container">
+        <div class="privacy-content">
+            <h2>Privacy Policy for T-38 Planning Aid</h2>
+            <p><strong>Last Updated: February 2026</strong></p>
+
+            <h3>1. Information We Collect</h3>
+            <p>
+                We collect the following information from subscribers:
+            </p>
+            <ul>
+                <li>Email address (required)</li>
+                <li>First and last name (optional)</li>
+                <li>Email engagement data (opens, clicks, etc.)</li>
+            </ul>
+
+            <h3>2. How We Use Your Information</h3>
+            <p>
+                We use your information solely for:
+            </p>
+            <ul>
+                <li>Sending monthly KML files and updates</li>
+                <li>Service notifications and maintenance alerts</li>
+                <li>Responding to your inquiries</li>
+                <li>Improving our service based on usage patterns</li>
+            </ul>
+
+            <h3>3. Data Protection</h3>
+            <p>
+                We implement appropriate technical and organizational measures to protect your personal data against 
+                unauthorized access, alteration, disclosure, or destruction. Your email address is encrypted in our database.
+            </p>
+
+            <h3>4. Sharing of Information</h3>
+            <p>
+                <strong>We will never sell, rent, or lease your personal information to third parties.</strong> We do not 
+                share your email address with any organization, commercial entity, or government agency except as required by law.
+            </p>
+
+            <h3>5. Cookies</h3>
+            <p>
+                Our website may use cookies to enhance your browsing experience. You can disable cookies through your browser 
+                settings if you prefer.
+            </p>
+
+            <h3>6. External Links</h3>
+            <p>
+                This site may contain links to external websites. We are not responsible for the privacy practices of 
+                external sites. Please review their privacy policies before providing personal information.
+            </p>
+
+            <h3>7. Unsubscribe</h3>
+            <p>
+                You can unsubscribe from our mailing list at any time by:
+            </p>
+            <ul>
+                <li>Clicking the unsubscribe link in any email from us</li>
+                <li>Contacting us through the contact form</li>
+                <li>Requesting removal from this website</li>
+            </ul>
+
+            <h3>8. Changes to This Policy</h3>
+            <p>
+                We may update this privacy policy from time to time. We will notify you of any changes by posting the new 
+                policy on this page and updating the "Last Updated" date.
+            </p>
+
+            <h3>9. Contact Us</h3>
+            <p>
+                If you have any questions about this privacy policy or our privacy practices, please 
+                <a href="{{ url_for('main.contact') }}">contact us</a>.
+            </p>
+
+            <h3>10. Data Retention</h3>
+            <p>
+                We retain your personal data for as long as you remain subscribed, or as necessary to provide our services. 
+                After unsubscribing, we will delete your information within 30 days, except where required to maintain records 
+                for legal or compliance purposes.
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}
