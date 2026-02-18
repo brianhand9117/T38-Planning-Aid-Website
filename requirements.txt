@@ -13,4 +13,4 @@ tqdm==4.66.1
 folium==0.14.0
 pymupdf==1.23.4
 Werkzeug==2.3.7
-gunicorn==21.2.0
+gunicorn==22.0.0
