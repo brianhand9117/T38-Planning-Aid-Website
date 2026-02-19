@@ -153,13 +153,48 @@ pip install gunicorn
 gunicorn -w 4 -b 0.0.0.0:5000 "app:create_app()"
 ```
 
+### Docker Mode (Recommended for Production)
+
+The application includes a **multi-container Docker setup** that separates the web server from the background scheduler for autonomous operation.
+
+**Quick Start:**
+
+```bash
+# 1. Create .env file with your configuration
+cp .env.example .env
+# Edit .env with your email settings
+
+# 2. Build and start services
+docker compose up -d
+
+# 3. View logs
+docker compose logs -f
+```
+
+**Services:**
+- **Web Service**: Flask app with Gunicorn (port 5000)
+- **Worker Service**: APScheduler for background tasks
+- **Shared Database**: SQLite database via Docker volumes
+
+**Benefits:**
+- ✅ Scheduler runs 24/7 independently from web server
+- ✅ Web server can restart without losing scheduled jobs
+- ✅ Production-ready with health checks and auto-restart
+- ✅ Easy to scale and monitor
+
+📖 **Full Docker documentation:** See [DOCKER_SETUP.md](DOCKER_SETUP.md) for complete guide
+
 ## Project Structure
 
 ```
 website/
-├── run.py                  # Application entry point
+├── run.py                  # Application entry point (development)
+├── worker.py               # Worker process for APScheduler (production)
 ├── requirements.txt        # Python dependencies
 ├── .env.example           # Example environment configuration
+├── Dockerfile             # Docker image configuration
+├── docker-compose.yml     # Multi-container Docker setup
+├── DOCKER_SETUP.md        # Complete Docker documentation
 ├── app/
 │   ├── __init__.py        # Flask app factory and configuration
 │   ├── models.py          # Database models

@@ -17,8 +17,15 @@ mail = Mail()
 scheduler = BackgroundScheduler()
 
 
-def create_app(config_name='development'):
-    """Create and configure the Flask application"""
+def create_app(config_name='development', enable_scheduler=False):
+    """
+    Create and configure the Flask application
+    
+    Args:
+        config_name: Configuration mode ('development' or 'production')
+        enable_scheduler: If True, schedule background tasks (for worker mode)
+                         If False, skip scheduling (for web server mode)
+    """
     app = Flask(__name__)
     
     # Secret key for sessions/flash
@@ -61,8 +68,10 @@ def create_app(config_name='development'):
     app.register_blueprint(main_bp)
     app.register_blueprint(admin_bp, url_prefix='/admin')
     
-    # Register scheduled tasks
-    from app.tasks import schedule_kml_generation
-    schedule_kml_generation(app)
+    # Register scheduled tasks only if explicitly enabled
+    # In production, the worker service handles scheduling
+    if enable_scheduler:
+        from app.tasks import schedule_kml_generation
+        schedule_kml_generation(app)
     
     return app
